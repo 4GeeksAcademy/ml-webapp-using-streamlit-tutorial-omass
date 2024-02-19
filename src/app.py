@@ -2,44 +2,33 @@ import streamlit as st
 import pickle
 import numpy as np
 
-# Loading the trained decision tree model
+# Load the trained decision tree model
 model = pickle.load(open('models/decision_tree_model.pkl', 'rb'))
 
-# Loading the label encoders
-label_encoders = pickle.load(open('label_encoders.pkl', 'rb'))
+# Define the list of features and their ranges
+features_with_ranges = [
+    ('cap-shape', 0, 5), ('cap-surface', 0, 3), ('cap-color', 0, 9), ('bruises', 0, 1), ('odor', 0, 8),
+    ('gill-attachment', 0, 1), ('gill-spacing', 0, 1), ('gill-size', 0, 1), ('gill-color', 0, 11),
+    ('stalk-shape', 0, 1), ('stalk-root', 0, 4), ('stalk-surface-above-ring', 0, 3), ('stalk-surface-below-ring', 0, 3),
+    ('stalk-color-above-ring', 0, 8), ('stalk-color-below-ring', 0, 8), ('veil-type', 0, 0), ('veil-color', 0, 3),
+    ('ring-number', 0, 2), ('ring-type', 0, 4), ('spore-print-color', 0, 8), ('population', 0, 5), ('habitat', 0, 6)
+]
 
-# Define the list of categorical features
-categorical_features = ['cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor', 'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color'
-                        'stalk-shape', 'stalk-root', 'stalk-surface-above-ring', 'stalk-surface-below-ring', 'stalk-color-above-ring', 'stalk-color-below-ring'
-                        'veil-type', 'veil-color', 'ring-number', 'ring-type', 'spore-print-color', 'population', 'habitat'
-                        ]
-
+# Title of the application
 st.title('Mushroom Classification Prediction')
 
-# Collect inputs using text input for feature options
+# Collect inputs
 input_features = []
-for feature in categorical_features:
-    user_input = st.text_input(f"Enter {feature.replace('_', ' ').title()} value", '')
-    input_features.append(user_input)
+for feature, min_val, max_val in features_with_ranges:
+    value = st.slider(feature.replace('_', ' ').title(), min_val, max_val, min_val)
+    input_features.append(value)
 
 # Predict button
 if st.button('Predict'):
-    # Encode the user inputs using the label encoders
-    encoded_features = []
-    for feature, user_input in zip(categorical_features, input_features):
-        encoder = label_encoders[feature]
-        try:
-            # Here, we convert the user input to the encoded form
-            encoded_input = encoder.transform([user_input])[0]
-            encoded_features.append(encoded_input)
-        except ValueError:
-            st.error(f"Invalid input for {feature}")
-            return
+    # Prepare the feature vector for prediction
+    features_vector = np.array(input_features).reshape(1, -1)
     
-    # Now encoded_features contains the encoded categorical variables
-    features_vector = np.array(encoded_features).reshape(1, -1)
-    
-    # Predict the class using the encoded features
+    # Predict the class
     prediction = model.predict(features_vector)
     class_label = 'Poisonous' if prediction[0] == 1 else 'Edible'
     
