@@ -1,6 +1,9 @@
 import streamlit as st
 import pickle
 import numpy as np
+import pandas as pd
+
+df = pd.read_csv('/workspaces/ml-webapp-using-streamlit-tutorial-omass/mushrooms.csv')
 
 # Load the trained decision tree model
 model = pickle.load(open('models/decision_tree_model.pkl', 'rb'))
@@ -13,6 +16,18 @@ features_with_ranges = [
     ('stalk-color-above-ring', 0, 8), ('stalk-color-below-ring', 0, 8), ('veil-type', 0, 0), ('veil-color', 0, 3),
     ('ring-number', 0, 2), ('ring-type', 0, 4), ('spore-print-color', 0, 8), ('population', 0, 5), ('habitat', 0, 6)
 ]
+
+unique_values = df['Stalk-Color-Below-Ring'].unique()
+min_val = min(0)
+max_val = max(8)
+
+# In Streamlit, set the slider
+if max_val > min_val:  # Only create the slider if the max value is greater than the min value
+    value = st.slider('Stalk-Color-Below-Ring', min_val, max_val, min_val)
+else:
+    st.error('Stalk-Color-Below-Ring has no range to create a slider.')
+    # Handle the case where there is no range, perhaps by allowing the user to input the value directly:
+    value = st.text_input('Stalk-Color-Below-Ring')
 
 # Title of the application
 st.title('Mushroom Classification Prediction')
