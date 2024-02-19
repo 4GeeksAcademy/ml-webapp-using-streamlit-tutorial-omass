@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 # Load the trained decision tree model
-model = pickle.load(open('models/decision_tree_model.pkl', 'rb'))
+model = pickle.load(open('.models/decision_tree_model.pkl', 'rb'))
 
 # Define the list of features and their ranges
 features_with_ranges = [
