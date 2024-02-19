@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 # Loading the trained decision tree model
-model = pickle.load(open('decision_tree_model.pkl', 'rb'))
+model = pickle.load(open('models/decision_tree_model.pkl', 'rb'))
 
 # Loading the label encoders
 label_encoders = pickle.load(open('label_encoders.pkl', 'rb'))
