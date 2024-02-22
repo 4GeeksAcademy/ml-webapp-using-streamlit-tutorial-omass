@@ -23,7 +23,7 @@ st.title('Mushroom Classification Prediction')
 # Collect inputs
 input_features = []
 for feature, min_val, max_val in features_with_ranges:
-    value = st.slider(feature.replace('_', ' ').title(), min_val, max_val, min_val)
+    value = st.slider(feature.replace('-', ' ').title(), min_val, max_val, min_val)
     input_features.append(value)
 
 # Predict button
